@@ -12,12 +12,6 @@ echo "Installing Node.js..."
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# Install MySQL
-echo "Installing MySQL..."
-sudo apt install mysql-server -y
-sudo systemctl start mysql
-sudo systemctl enable mysql
-
 # Install PM2 untuk process management
 echo "Installing PM2..."
 sudo npm install -g pm2
