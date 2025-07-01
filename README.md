@@ -24,6 +24,7 @@ cp .env.example .env
 # Edit file .env dengan konfigurasi yang benar
 ```
 
+<!--
 ### **STEP 2: Setup VPS**
 
 1. **Connect ke VPS via PuTTY:**
@@ -176,4 +177,4 @@ Jika ada masalah, cek:
 
 1. Log PM2: `pm2 logs nodebot`
 2. Log MySQL: `sudo tail -f /var/log/mysql/error.log`
-3. Status service: `sudo systemctl status mysql`
+3. Status service: `sudo systemctl status mysql` -->
