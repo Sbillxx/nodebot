@@ -19,13 +19,10 @@ async function getDbConnection() {
 // ===== ADMIN SESSION & LOGIN =====
 const adminSessions = {}; // { userId: { loggedIn: true, username: '...' } }
 
-// State sementara untuk tambah QnA per user
 const adminAddState = {}; // { userId: { category, step, question } }
 
-// State sementara untuk edit QnA per user
 const adminEditState = {}; // { userId: { category, id, step, question } }
 
-// State sementara untuk option admin per user
 const adminOptionState = {}; // { userId: { step, type } }
 
 // Helper: daftar handler kategori admin_qna_*
