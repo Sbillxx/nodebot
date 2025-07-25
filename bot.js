@@ -487,6 +487,50 @@ bot.action("admin_option", async (ctx) => {
   await ctx.editMessageText("⚙️ *Option Menu*\nSilakan pilih menu pengaturan:", { parse_mode: "Markdown", ...keyboard });
 });
 
+// Tambahkan setelah handler bot.action("admin_option", ...)
+bot.action("change_bantuan", async (ctx) => {
+  if (!adminSessions[ctx.from.id]?.loggedIn) {
+    await ctx.editMessageText("⚠️ Sesi telah berakhir. Silakan login kembali dengan /admin");
+    return;
+  }
+  adminOptionState[ctx.from.id] = { step: "bantuan", type: "bantuan" };
+  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Batal", "admin_option")]]);
+  await ctx.editMessageText("❓ *Ganti Bantuan*\n\nSilakan ketik teks bantuan baru:", { parse_mode: "Markdown", ...keyboard });
+});
+
+// Handler untuk Ganti Username
+bot.action("change_username", async (ctx) => {
+  if (!adminSessions[ctx.from.id]?.loggedIn) {
+    await ctx.editMessageText("⚠️ Sesi telah berakhir. Silakan login kembali dengan /admin");
+    return;
+  }
+  adminOptionState[ctx.from.id] = { step: "username", type: "username" };
+  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Batal", "admin_option")]]);
+  await ctx.editMessageText("👤 *Ganti Username*\n\nSilakan ketik username baru:", { parse_mode: "Markdown", ...keyboard });
+});
+
+// Handler untuk Ganti Password
+bot.action("change_password", async (ctx) => {
+  if (!adminSessions[ctx.from.id]?.loggedIn) {
+    await ctx.editMessageText("⚠️ Sesi telah berakhir. Silakan login kembali dengan /admin");
+    return;
+  }
+  adminOptionState[ctx.from.id] = { step: "password", type: "password" };
+  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Batal", "admin_option")]]);
+  await ctx.editMessageText("🔑 *Ganti Password*\n\nSilakan ketik password baru (min 6 karakter):", { parse_mode: "Markdown", ...keyboard });
+});
+
+// Handler untuk Ganti Panduan
+bot.action("change_panduan", async (ctx) => {
+  if (!adminSessions[ctx.from.id]?.loggedIn) {
+    await ctx.editMessageText("⚠️ Sesi telah berakhir. Silakan login kembali dengan /admin");
+    return;
+  }
+  adminOptionState[ctx.from.id] = { step: "panduan", type: "panduan" };
+  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Batal", "admin_option")]]);
+  await ctx.editMessageText("📖 *Ganti Panduan*\n\nSilakan ketik panduan baru:", { parse_mode: "Markdown", ...keyboard });
+});
+
 // ===== SEARCH QNA =====
 const userSearchState = {}; // { userId: true }
 
@@ -788,14 +832,14 @@ bot.action("change_notif", async (ctx) => {
   await conn.end();
   const alreadySet = rows.length > 0;
   adminOptionState[ctx.from.id] = { step: "notif", type: "notif" };
-  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Kembali", "option_cancel")]]);
+  const keyboard = Markup.inlineKeyboard([[Markup.button.callback("⬅️ Kembali", "admin_option")]]);
   let text = `🔔 *Set Notifikasi Feedback ke Admin*\n\nUser ID Anda: ${ctx.from.id}`;
   if (alreadySet) {
     text += `\n\nUser ini sudah terdaftar sebagai penerima notifikasi feedback.`;
     await ctx.editMessageText(text, { parse_mode: "Markdown", ...keyboard });
   } else {
     text += `\n\nKlik tombol di bawah untuk set user ini sebagai penerima notifikasi feedback.`;
-    const setKeyboard = Markup.inlineKeyboard([[Markup.button.callback("Set User Ini", "set_notif_user")], [Markup.button.callback("⬅️ Kembali", "option_cancel")]]);
+    const setKeyboard = Markup.inlineKeyboard([[Markup.button.callback("Set User Ini", "set_notif_user")], [Markup.button.callback("⬅️ Kembali", "admin_option")]]);
     await ctx.editMessageText(text, { parse_mode: "Markdown", ...setKeyboard });
   }
 });
