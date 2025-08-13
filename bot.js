@@ -957,6 +957,28 @@ bot.action(new RegExp("^notif_user_delete_(\\d+)$"), async (ctx) => {
 });
 
 // Jalankan bot
-bot.launch();
+bot.launch().catch((error) => {
+  console.error("❌ Error saat menjalankan bot:", error);
+  process.exit(1);
+});
 
-console.log("�� Bot Telegram Node.js sudah berjalan!");
+// Error handling untuk uncaught exceptions
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+  console.error("Stack trace:", error.stack);
+  process.exit(1);
+});
+
+// Error handling untuk unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+  process.exit(1);
+});
+
+// Error handling untuk bot errors
+bot.catch((error) => {
+  console.error("❌ Bot error:", error);
+  process.exit(1);
+});
+
+console.log("🚀 Bot Telegram Node.js sudah berjalan!");

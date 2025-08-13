@@ -1,180 +1,122 @@
-# NodeBot - Telegram Bot
+# 🤖 Telegram Bot QnA dengan PM2 Auto-Restart
 
-Bot Telegram dengan database MySQL untuk deployment di VPS.
+Bot Telegram untuk sistem QnA dengan fitur admin panel dan auto-restart menggunakan PM2.
 
-## 📋 Tutorial Deployment Lengkap
+## 🚀 **Deployment di Rocky Linux Server**
 
-### **STEP 1: Persiapan di Komputer Lokal**
-
-1. **Upload ke GitHub:**
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: NodeBot"
-git remote add origin https://github.com/username/nodebot.git
-git push -u origin main
-```
-
-2. **Siapkan file .env:**
-
-```bash
-# Copy file .env.example jika ada, atau buat manual
-cp .env.example .env
-# Edit file .env dengan konfigurasi yang benar
-```
-
-<!--
-### **STEP 2: Setup VPS**
-
-1. **Connect ke VPS via PuTTY:**
-
-```bash
-ssh username@your-vps-ip
-```
-
-2. **Jalankan script setup VPS:**
-
-```bash
-# Download script setup
-wget https://raw.githubusercontent.com/username/nodebot/main/vps-setup.sh
-chmod +x vps-setup.sh
-./vps-setup.sh
-```
-
-### **STEP 3: Clone Repository**
+### **Quick Setup:**
 
 ```bash
 # Clone repository
-git clone https://github.com/username/nodebot.git
+git clone <your-repo>
 cd nodebot
+
+# Setup otomatis
+chmod +x setup-rocky-linux.sh
+./setup-rocky-linux.sh
 ```
 
-### **STEP 4: Import Database**
-
-1. **Upload file SQL ke VPS:**
-
-   - Via WinSCP: Drag & drop file `.sql` ke `/home/username/`
-   - Via SCP: `pscp database.sql username@vps-ip:/home/username/`
-
-2. **Jalankan script import:**
+### **Manual Setup:**
 
 ```bash
-# Edit password di script dulu
-nano import-db.sh
-# Jalankan script
-chmod +x import-db.sh
-./import-db.sh
-```
+# 1. Install dependencies
+sudo dnf install -y nodejs npm
+sudo npm install -g pm2
 
-### **STEP 5: Setup Environment**
-
-```bash
-# Copy file .env
-cp .env.example .env
-# Edit konfigurasi
-nano .env
-```
-
-Isi file `.env`:
-
-```env
-BOT_TOKEN=your_bot_token_here
-DB_HOST=localhost
-DB_USER=nodebot_user
-DB_PASSWORD=your_password
-DB_NAME=nodebot
-DB_PORT=3306
-```
-
-### **STEP 6: Install Dependencies & Jalankan**
-
-```bash
-# Install dependencies
+# 2. Install project dependencies
 npm install
 
-# Jalankan dengan PM2
-pm2 start bot.js --name "nodebot"
+# 3. Setup environment variables
+cp env.example .env
+# Edit .env dengan credentials yang benar
 
-# Auto restart saat reboot
-pm2 startup
+# 4. Start bot
+pm2 start ecosystem.config.js
 pm2 save
 
-# Cek status
+# 5. Setup auto-start
+pm2 startup
+pm2 save
+```
+
+## 📁 **File Penting:**
+
+- `bot.js` - Bot Telegram utama
+- `ecosystem.config.js` - Konfigurasi PM2
+- `restart-bot.sh` - Script restart untuk Linux
+- `setup-rocky-linux.sh` - Setup otomatis untuk Rocky Linux
+
+## 🔧 **PM2 Commands:**
+
+```bash
+# Start bot
+pm2 start ecosystem.config.js
+
+# Stop bot
+pm2 stop telegram-bot
+
+# Restart bot
+pm2 restart telegram-bot
+
+# View logs
+pm2 logs telegram-bot
+
+# Monitor real-time
+pm2 monit
+
+# View status
 pm2 status
-pm2 logs nodebot
+
+# Restart dengan script
+./restart-bot.sh
 ```
 
-## 🔧 Perintah Berguna
+## 🚨 **Auto-Restart Features:**
 
-### **Update Bot:**
+Bot akan **otomatis restart** ketika:
+
+- ❌ Uncaught exception
+- ❌ Unhandled promise rejection
+- ❌ Bot error
+- ❌ Memory > 1GB
+- ❌ Process crash
+
+## 📊 **Monitoring:**
 
 ```bash
-git pull origin main
-npm install
-pm2 restart nodebot
+# View logs
+pm2 logs telegram-bot --lines 100
+
+# Monitor resources
+pm2 monit
+
+# View process info
+pm2 show telegram-bot
 ```
 
-### **Cek Log:**
+## 🔄 **Restart Bot:**
 
 ```bash
-pm2 logs nodebot
-pm2 logs nodebot --lines 100
+# Restart dengan script
+./restart-bot.sh
+
+# Atau manual
+pm2 restart telegram-bot
 ```
 
-### **Restart Bot:**
+## 💡 **Tips:**
 
-```bash
-pm2 restart nodebot
-```
+1. **Selalu gunakan `ecosystem.config.js`** untuk start bot
+2. **Jangan lupa `pm2 save`** setelah konfigurasi
+3. **Monitor logs** secara berkala
+4. **Gunakan `pm2 monit`** untuk monitoring real-time
 
-### **Stop Bot:**
+## 🎯 **Hasil:**
 
-```bash
-pm2 stop nodebot
-```
+- ✅ **Bot selalu online** - Auto-restart ketika crash
+- ✅ **Error terdeteksi** - PM2 tau kalau ada masalah
+- ✅ **Monitoring real-time** - Bisa lihat status bot
+- ✅ **Logs lengkap** - Semua error tercatat
+- ✅ **Startup otomatis** - Bot jalan sendiri setelah reboot server
 
-## 📁 Struktur File
-
-```
-nodebot/
-├── bot.js              # File utama bot
-├── package.json        # Dependencies
-├── .env               # Konfigurasi (buat manual)
-├── .gitignore         # File yang diignore git
-├── deploy.sh          # Script deployment
-├── vps-setup.sh       # Script setup VPS
-├── import-db.sh       # Script import database
-└── README.md          # Dokumentasi ini
-```
-
-## 🚨 Troubleshooting
-
-### **Bot tidak jalan:**
-
-```bash
-pm2 logs nodebot
-# Cek error di log
-```
-
-### **Database error:**
-
-```bash
-mysql -u nodebot_user -p nodebot
-# Test koneksi database
-```
-
-### **Port error:**
-
-```bash
-sudo netstat -tlnp | grep :3000
-# Cek port yang digunakan
-```
-
-## 📞 Support
-
-Jika ada masalah, cek:
-
-1. Log PM2: `pm2 logs nodebot`
-2. Log MySQL: `sudo tail -f /var/log/mysql/error.log`
-3. Status service: `sudo systemctl status mysql` -->
+**Tidak ada lagi bot yang stuck karena error!** 🚀
